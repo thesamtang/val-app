@@ -85,27 +85,31 @@
 
     <div class="container" layout vertical center>
 
-      <menu-service id="service" menu="{{menu}}"></menu-service>
+      <!-- <menu-service id="service" menu="{{menu}}"></menu-service> -->
 
+      <firebase-element id="base" on-data-change="{{dataChange}}" data="{{data}}" location="https://ezval.firebaseio.com/" log></firebase-element>
 
+      <firebase-element id="menubase" on-data-change="{{dataChange}}" data="{{menu}}" location="https://valmenu.firebaseio.com/" log></firebase-element>
 
       <menu-card
         on-favorite-tap="{{handleFavorite}}">
-        <h2>Dinner</h2>
         
-        <h3>Saturday October 4</h3>
-        <p>Charlie's Chicken Sandwich</p>
+        
+        <h3>Lunch</h3>
+        <p>{{menu[menu.currentDay].lunch}}</p>
+        (menu[menu.currentDay].lunch)
 
         <paper-button raised id="like" on-tap="{{incrementLikes}}"> Like: {{data.menucard.likes}}</paper-button>
         <paper-button raised id="dislike" on-tap="{{incrementDislikes}}"> Dislike: {{data.menucard.dislikes}}</paper-button>
 
       </menu-card>
 
-      <menu-card>
-        <h2>Dinner</h2>
+      <menu-card
+        on-favorite-tap="{{handleFavorite}}">
         
-        <h3>Saturday October 4</h3>
-        <p>Charlie's Chicken Sandwich</p>
+        
+        <h3>Dinner</h3>
+        <p>{{menu[menu.currentDay].dinner}}</p>
 
         <paper-button raised id="like" on-tap="{{incrementLikes}}"> Like: {{data.menucard.likes}}</paper-button>
         <paper-button raised id="dislike" on-tap="{{incrementDislikes}}"> Dislike: {{data.menucard.dislikes}}</paper-button>
@@ -114,7 +118,7 @@
       
     </div>
 
-    <firebase-element id="base" on-data-change="{{dataChange}}" data="{{data}}" location="https://ezval.firebaseio.com/" log></firebase-element>
+    
 
     <button on-tap="{{incrementLikes}}">Likes</button>
     <button on-tap="{{incrementDislikes}}">Dislikes</button>
@@ -122,7 +126,13 @@
   </core-header-panel>
 
   <script>
-
+    // Polymer({
+    //   returnDay: function() {
+    //     this.day = new Date().getDay();
+    //   }
+    // });
+    
+    this.test = "Hello";
     var tabs = document.querySelector('paper-tabs');
 
     tabs.addEventListener('core-select', function() {
@@ -131,60 +141,44 @@
 
     // FIREBASE
     addEventListener('template-bound', function(e) {
-      var fb = new Firebase("https://ezval.firebaseio.com/");
+      var mealdata = new Firebase("https://ezval.firebaseio.com/");
+      var menudata = new Firebase("https://valmenu.firebaseio.com/");
       scope = e.target;
-      var likes;
-      var dislikes;
+      var likes, dislikes, currentLunch, currentDinner, currentDate;
+
+      var date = new Date().getDay();
+      menudata.on('value', function(snapshot) {
+        var day = snapshot.val()[date];
+        console.log(day);
+
+        currentDate = day.date;
+        console.log(currentDate);
+        currentLunch = day.lunch;
+        console.log(day.lunch);
+        currentDinner = day.dinner;
+        console.log(currentDinner);
+      });
+
+      scope.returnDay = function() {
+        var currentDay = new Date().getDay();
+        mealdata.child('currentday').set(currentDay);
+      }
 
       scope.incrementLikes = function() {
-        fb.child('menucard').child('likes').on('value', function(snapshot) {
+        mealdata.child('menucard').child('likes').on('value', function(snapshot) {
           likes = snapshot.val()+1;
         });
-        fb.child('menucard').child('likes').set(likes);
+        mealdata.child('menucard').child('likes').set(likes);
       }
 
       scope.incrementDislikes = function() {
-        fb.child('menucard').child('dislikes').on('value', function(snapshot) {
+        mealdata.child('menucard').child('dislikes').on('value', function(snapshot) {
           dislikes = snapshot.val()+1;
         });
-        fb.child('menucard').child('dislikes').set(dislikes);
+        mealdata.child('menucard').child('dislikes').set(dislikes);
       }
     });
 
-    //KIMONO
-    function kimonoCallback(data) {
-      var kimono = data.results.valmenu;
-      console.log(kimono);
-
-      var date;
-      var menuItem;
-      var mealList;
-      var categoryList;
-
-      for (var item in kimono) {
-        if (typeof item.mealtime != "undefined") {
-          console.log(item.date);
-          date = item.date;
-          mealList = item.mealentries;
-          categoryList = item.mealtime;
-          var tradIndex;
-
-          for (var i = 0; i < categoryList.length; i++) {
-            if (categoryList[i] == "Traditional") {
-              tradIndex = i;
-            }
-          }
-          menuItem = mealList[tradIndex];
-        }
-      }
-      console.log(menuItem);
-    }
-
-    $.ajax({
-      "url":"https://www.kimonolabs.com/api/8g3e6a44?apikey=5oYl3OsxFLNkffKtJh7e2mFZnLr3U5TM&callback=kimonoCallback",
-      "crossDomain":true,
-      "dataType":"jsonp"
-    });
   </script>
 </template>
 </body>

@@ -1,6 +1,7 @@
 <link rel="import" href="../components/polymer/polymer.html">
 <link rel="import" href="../post-service/post-service.html">
 <link rel="import" href="post-card.html">
+<script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
 
 <polymer-element name="post-list" attributes="show">
   <template>
@@ -14,22 +15,29 @@
     }
     </style>
 
-    <menu-service id="service" menu="{{menu}}"></menu-service>
+    <menu-service id="service" posts="{{posts}}"></menu-service>
     
     <div layout vertical center>
-      <template repeat="{{item in menu}}">
-        <post-card
-          on-favorite-tap="{{handleFavorite}}">
+      <template repeat="{{post in posts}}">
+        <menu-card
+          
+          hidden?="{{show == 'favorites' && !post.favorite}}">
+          
+
+          
           <img src="{{post.avatar}}" width="70" height="70">
           <h2>{{post.username}}</h2>
           <p>{{post.text}}</p>
-        </post-card>
+        </menu-card>
       </template>
     </div>
   </template>
 
   <script>
   Polymer({
+    getDay: function() {
+      return new Date().getDay();
+    }
     handleFavorite: function(event, detail, sender) {
       var post = sender.templateInstance.model.post;
       this.$.service.setFavorite(post.uid, post.favorite);
