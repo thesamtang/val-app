@@ -97,10 +97,9 @@
         
         <h3>Lunch</h3>
         <p>{{menu[menu.currentDay].lunch}}</p>
-        (menu[menu.currentDay].lunch)
 
-        <paper-button raised id="like" on-tap="{{incrementLikes}}"> Like: {{data.menucard.likes}}</paper-button>
-        <paper-button raised id="dislike" on-tap="{{incrementDislikes}}"> Dislike: {{data.menucard.dislikes}}</paper-button>
+        <paper-button raised id="like" on-tap="{{incrementLunchLikes}}"> Like: {{data[menu[menu.currentDay].lunch].likes}}</paper-button>
+        <paper-button raised id="dislike" on-tap="{{incrementLunchDislikes}}"> Dislike: {{data[menu[menu.currentDay].lunch].dislikes}}</paper-button>
 
       </menu-card>
 
@@ -111,28 +110,16 @@
         <h3>Dinner</h3>
         <p>{{menu[menu.currentDay].dinner}}</p>
 
-        <paper-button raised id="like" on-tap="{{incrementLikes}}"> Like: {{data.menucard.likes}}</paper-button>
-        <paper-button raised id="dislike" on-tap="{{incrementDislikes}}"> Dislike: {{data.menucard.dislikes}}</paper-button>
+        <paper-button raised id="like" on-tap="{{incrementDinnerLikes}}"> Like: {{data[menu[menu.currentDay].dinner].likes}}</paper-button>
+        <paper-button raised id="dislike" on-tap="{{incrementDinnerDislikes}}"> Dislike: {{data[menu[menu.currentDay].dinner].dislikes}}</paper-button>
 
       </menu-card>
       
     </div>
 
-    
-
-    <button on-tap="{{incrementLikes}}">Likes</button>
-    <button on-tap="{{incrementDislikes}}">Dislikes</button>
-
   </core-header-panel>
 
   <script>
-    // Polymer({
-    //   returnDay: function() {
-    //     this.day = new Date().getDay();
-    //   }
-    // });
-    
-    this.test = "Hello";
     var tabs = document.querySelector('paper-tabs');
 
     tabs.addEventListener('core-select', function() {
@@ -147,35 +134,58 @@
       var likes, dislikes, currentLunch, currentDinner, currentDate;
 
       var date = new Date().getDay();
-      menudata.on('value', function(snapshot) {
-        var day = snapshot.val()[date];
-        console.log(day);
+      
 
-        currentDate = day.date;
-        console.log(currentDate);
-        currentLunch = day.lunch;
-        console.log(day.lunch);
-        currentDinner = day.dinner;
-        console.log(currentDinner);
-      });
+      scope.incrementLunchLikes = function(index) {
+        menudata.on('value', function(snapshot) {
+          var day = snapshot.val()[date];
 
-      scope.returnDay = function() {
-        var currentDay = new Date().getDay();
-        mealdata.child('currentday').set(currentDay);
-      }
-
-      scope.incrementLikes = function() {
-        mealdata.child('menucard').child('likes').on('value', function(snapshot) {
+          currentDate = day.date;
+          currentLunch = day.lunch;
+        });
+        mealdata.child(currentLunch).child('likes').on('value', function(snapshot) {
           likes = snapshot.val()+1;
         });
-        mealdata.child('menucard').child('likes').set(likes);
+        mealdata.child(currentLunch).child('likes').set(likes);
       }
 
-      scope.incrementDislikes = function() {
-        mealdata.child('menucard').child('dislikes').on('value', function(snapshot) {
+      scope.incrementDinnerLikes = function(index) {
+        menudata.on('value', function(snapshot) {
+          var day = snapshot.val()[date];
+
+          currentDate = day.date;
+          currentDinner = day.dinner;
+        });
+        mealdata.child(currentDinner).child('likes').on('value', function(snapshot) {
+          likes = snapshot.val()+1;
+        });
+        mealdata.child(currentDinner).child('likes').set(likes);
+      }
+
+      scope.incrementLunchDislikes = function() {
+        menudata.on('value', function(snapshot) {
+          var day = snapshot.val()[date];
+
+          currentDate = day.date;
+          currentLunch = day.lunch;
+        });
+        mealdata.child(currentLunch).child('dislikes').on('value', function(snapshot) {
           dislikes = snapshot.val()+1;
         });
-        mealdata.child('menucard').child('dislikes').set(dislikes);
+        mealdata.child(currentLunch).child('dislikes').set(dislikes);
+      }
+
+      scope.incrementDinnerDislikes = function() {
+        menudata.on('value', function(snapshot) {
+          var day = snapshot.val()[date];
+
+          currentDate = day.date;
+          currentDinner = day.dinner;
+        });
+        mealdata.child(currentDinner).child('dislikes').on('value', function(snapshot) {
+          dislikes = snapshot.val()+1;
+        });
+        mealdata.child(currentDinner).child('dislikes').set(dislikes);
       }
     });
 
