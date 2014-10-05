@@ -2,7 +2,6 @@
 <link rel="import" href="../post-service/post-service.html">
 <link rel="import" href="post-card.html">
 
-<!--Thomas-->
 <polymer-element name="post-list" attributes="show">
   <template>
     <style>
@@ -14,13 +13,27 @@
       margin-bottom: 30px;
     }
     </style>
+
+    <menu-service id="service" menu="{{menu}}"></menu-service>
     
-    <!-- add markup here -->
-    
+    <div layout vertical center>
+      <template repeat="{{item in menu}}">
+        <post-card
+          on-favorite-tap="{{handleFavorite}}">
+          <img src="{{post.avatar}}" width="70" height="70">
+          <h2>{{post.username}}</h2>
+          <p>{{post.text}}</p>
+        </post-card>
+      </template>
+    </div>
   </template>
 
   <script>
-  Polymer({});
+  Polymer({
+    handleFavorite: function(event, detail, sender) {
+      var post = sender.templateInstance.model.post;
+      this.$.service.setFavorite(post.uid, post.favorite);
+    }
+  });
   </script>
-
 </polymer-element>

@@ -8,6 +8,8 @@
   <meta name="viewport" 
   content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
 
+  <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+
   <script src="../components/platform/platform.js">
   </script>
 
@@ -15,6 +17,8 @@
   <link rel="import" href="../components/core-header-panel/core-header-panel.html">
   <link rel="import" href="../components/core-toolbar/core-toolbar.html">
   <link rel="import" href="../components/paper-tabs/paper-tabs.html">
+  <link rel="import" href="../components/firebase-element/firebase-element.html">
+  <link rel="import" href="../components/firebase-element/firebase-import.html">
   <link rel="import" href="menu-card.html">
 
   <style>
@@ -59,6 +63,7 @@
 </head>
 
 <body unresolved>
+  <template is="auto-binding">
   <core-header-panel>
 
     <core-toolbar>
@@ -70,6 +75,18 @@
 
     <div class="container" layout vertical center>
 
+      <menu-service id="service" menu="{{menu}}"></menu-service>
+
+
+
+      <menu-card
+        on-favorite-tap="{{handleFavorite}}">
+        <h2>Dinner</h2>
+        
+        <h3>Saturday October 4</h3>
+        <p>Charlie's Chicken Sandwich</p>
+      </menu-card>
+
       <menu-card>
         <h2>Dinner</h2>
         
@@ -79,15 +96,79 @@
       
     </div>
 
+    <firebase-element id="base" on-data-change="{{dataChange}}" data="{{data}}" location="https://ezval.firebaseio.com/" log></firebase-element>
+
+    <button on-tap="{{incrementLikes}}">Likes</button>
+    <button on-tap="{{incrementDislikes}}">Dislikes</button>
+
   </core-header-panel>
 
   <script>
+
     var tabs = document.querySelector('paper-tabs');
 
     tabs.addEventListener('core-select', function() {
       console.log("Selected: " + tabs.selected);
     });
+
+    // FIREBASE
+    addEventListener('template-bound', function(e) {
+      var fb = new Firebase("https://ezval.firebaseio.com/");
+      scope = e.target;
+      var likes;
+      var dislikes;
+
+      scope.incrementLikes = function() {
+        fb.child('menu-card').child('likes').on('value', function(snapshot) {
+          likes = snapshot.val()+1;
+        });
+        fb.child('menu-card').child('likes').set(likes);
+      }
+
+      scope.incrementDislikes = function() {
+        fb.child('menu-card').child('dislikes').on('value', function(snapshot) {
+          dislikes = snapshot.val()+1;
+        });
+        fb.child('menu-card').child('dislikes').set(dislikes);
+      }
+    });
+
+    //KIMONO
+    function kimonoCallback(data) {
+      var kimono = data.results.valmenu;
+      console.log(kimono);
+
+      var date;
+      var menuItem;
+      var mealList;
+      var categoryList;
+
+      for (var item in kimono) {
+        if (typeof item.mealtime != "undefined") {
+          console.log(item.date);
+          date = item.date;
+          mealList = item.mealentries;
+          categoryList = item.mealtime;
+          var tradIndex;
+
+          for (var i = 0; i < categoryList.length; i++) {
+            if (categoryList[i] == "Traditional") {
+              tradIndex = i;
+            }
+          }
+          menuItem = mealList[tradIndex];
+        }
+      }
+      console.log(menuItem);
+    }
+
+    $.ajax({
+      "url":"https://www.kimonolabs.com/api/8g3e6a44?apikey=5oYl3OsxFLNkffKtJh7e2mFZnLr3U5TM&callback=kimonoCallback",
+      "crossDomain":true,
+      "dataType":"jsonp"
+    });
   </script>
+</template>
 </body>
 
 </html>
