@@ -40,7 +40,7 @@
     -webkit-overflow-scrolling: touch;
   }
   core-toolbar {
-    background: #03a9f4;
+    background: #7D337D;
     color: white;
   }
   #tabs {
@@ -62,11 +62,15 @@
   }
 
   #like {
-      background: green;
-    }
+    color: white;
+    font-weight: 500;
+    background: #7D337D;
+  }
 
   #dislike {
-    background: red;
+    color: white;
+    font-weight: 500;
+    background: #990000;
   }
   </style>
 
@@ -121,9 +125,12 @@
 
   <script>
     var tabs = document.querySelector('paper-tabs');
+    
+
+    var list = document.querySelector('post-list');
 
     tabs.addEventListener('core-select', function() {
-      console.log("Selected: " + tabs.selected);
+      list.show = tabs.selected;
     });
 
     // FIREBASE
