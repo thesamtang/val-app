@@ -20,6 +20,8 @@
   <link rel="import" href="../components/firebase-element/firebase-element.html">
   <link rel="import" href="../components/firebase-element/firebase-import.html">
   <link rel="import" href="menu-card.html">
+  <link rel="import" href="../components/core-icon-button/core-icon-button.html">
+  <link rel="import" href="../components/paper-button/paper-button.html">
 
   <style>
   html,body {
@@ -58,6 +60,14 @@
       width: 400px;
     }
   }
+
+  #like {
+      background: green;
+    }
+
+  #dislike {
+    background: red;
+  }
   </style>
 
 </head>
@@ -85,6 +95,10 @@
         
         <h3>Saturday October 4</h3>
         <p>Charlie's Chicken Sandwich</p>
+
+        <paper-button raised id="like" on-tap="{{incrementLikes}}"> Like: {{data.menucard.likes}}</paper-button>
+        <paper-button raised id="dislike" on-tap="{{incrementDislikes}}"> Dislike: {{data.menucard.dislikes}}</paper-button>
+
       </menu-card>
 
       <menu-card>
@@ -92,6 +106,10 @@
         
         <h3>Saturday October 4</h3>
         <p>Charlie's Chicken Sandwich</p>
+
+        <paper-button raised id="like" on-tap="{{incrementLikes}}"> Like: {{data.menucard.likes}}</paper-button>
+        <paper-button raised id="dislike" on-tap="{{incrementDislikes}}"> Dislike: {{data.menucard.dislikes}}</paper-button>
+
       </menu-card>
       
     </div>
@@ -119,17 +137,17 @@
       var dislikes;
 
       scope.incrementLikes = function() {
-        fb.child('menu-card').child('likes').on('value', function(snapshot) {
+        fb.child('menucard').child('likes').on('value', function(snapshot) {
           likes = snapshot.val()+1;
         });
-        fb.child('menu-card').child('likes').set(likes);
+        fb.child('menucard').child('likes').set(likes);
       }
 
       scope.incrementDislikes = function() {
-        fb.child('menu-card').child('dislikes').on('value', function(snapshot) {
+        fb.child('menucard').child('dislikes').on('value', function(snapshot) {
           dislikes = snapshot.val()+1;
         });
-        fb.child('menu-card').child('dislikes').set(dislikes);
+        fb.child('menucard').child('dislikes').set(dislikes);
       }
     });
 
