@@ -3,7 +3,7 @@
 
 <head>
 
-  <title>unquote</title>
+  <title>Val App</title>
 
   <meta name="viewport" 
   content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
@@ -20,6 +20,7 @@
   <link rel="import" href="../components/firebase-element/firebase-element.html">
   <link rel="import" href="../components/firebase-element/firebase-import.html">
   <link rel="import" href="menu-card.html">
+  <link rel="import" href="date-card.html">
   <link rel="import" href="../components/core-icon-button/core-icon-button.html">
   <link rel="import" href="../components/paper-button/paper-button.html">
 
@@ -89,14 +90,19 @@
 
     <div class="container" layout vertical center>
 
-      <!-- <menu-service id="service" menu="{{menu}}"></menu-service> -->
-
+      <!-- <menu-container show="nextmeal"></menu-container> -->
       <firebase-element id="base" on-data-change="{{dataChange}}" data="{{data}}" location="https://ezval.firebaseio.com/" log></firebase-element>
 
       <firebase-element id="menubase" on-data-change="{{dataChange}}" data="{{menu}}" location="https://valmenu.firebaseio.com/" log></firebase-element>
+      
+      <date-card>
+        <h2>{{menu[menu.currentDay].date}}</h2>
+
+      </date-card>
 
       <menu-card
-        on-favorite-tap="{{handleFavorite}}">
+        on-favorite-tap="{{handleFavorite}}"
+        hidden?="{{show == 'favorites'}}">
         
         
         <h3>Lunch</h3>
@@ -108,7 +114,8 @@
       </menu-card>
 
       <menu-card
-        on-favorite-tap="{{handleFavorite}}">
+        on-favorite-tap="{{handleFavorite}}"
+        hidden?="{{show == 'favorites'}}">
         
         
         <h3>Dinner</h3>
@@ -125,12 +132,13 @@
 
   <script>
     var tabs = document.querySelector('paper-tabs');
-    
-
-    var list = document.querySelector('post-list');
+    var list = document.querySelector('menu-card');
 
     tabs.addEventListener('core-select', function() {
+      console.log("Selected: " + tabs.selected);
       list.show = tabs.selected;
+      console.log(list.show);
+      
     });
 
     // FIREBASE
