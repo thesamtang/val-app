@@ -1,5 +1,6 @@
 <link rel="import" href="../components/polymer/polymer.html">
 <link rel="import" href="../components/core-icon-button/core-icon-button.html">
+<link rel="import" href="../components/paper-button/paper-button.html">
 
 <polymer-element name="menu-card">
   <template>
@@ -36,6 +37,59 @@
       font-weight: 300;
     }
     
+    #like {
+      background: green;
+    }
+
+    #dislike {
+      background: red;
+    }
+    /*.box1 {
+      margin-bottom: 10px;
+      width: 100px;
+    }
+
+    .box2 {
+      margin-bottom: 10px;
+      width: 100px;
+    }
+
+    /* Style upvote/downvote icon buttons */
+    /*polyfill-next-selector { content: '.box1 #upvote'; }
+    .box1 ::content #upvote {
+      position: absolute;
+      bottom: 3px;
+      right: 53px;
+    }
+
+    polyfill-next-selector { content: '.box1 p'; }
+    .box1 ::content p {
+      position: absolute;
+      bottom: 3px;
+      right: 83px;
+    }
+
+    polyfill-next-selector { content: '.box2 p'; }
+    .box2 ::content p {
+      position: absolute;
+      bottom: 3px;
+      right: 23px;
+    }
+
+    polyfill-next-selector { content: '.box2 #downvote'; }
+    .box2 ::content #downvote {
+      position: absolute;
+      bottom: 3px;
+      right: 3px;
+    }*/
+
+    /*polyfill-next-selector { content: '.vote-box p:nth-child(2)'; }
+    .vote-box ::content p:nth-child(2) {
+      position: absolute;
+      bottom: 3;
+      right: 23;
+    }*/
+
     </style>
 
     <div class="card-header" layout vertical>
@@ -43,10 +97,33 @@
       <content select="h3"></content>
       <content select="p"></content>
     </div>
+
+    <paper-button raised id="like"> Like: {{likes}}</paper-button>
+    <paper-button raised id="dislike"> Dislike: {{dislikes}}</paper-button>
+
+    <!-- <div class="box1" layout horizontal end-justified> -->
+      <!--Counter/Upvote button-->
+      <!-- <content select="p"></content>
+      <core-icon-button
+      src="arrow_up.png" id="upvote">  
+      </core-icon-button>
+    </div>
+
+    <div class="box2" layout horizontal end-justified> -->
+      <!--Counter/Downvote button--> 
+     <!--  <content select="p"></content>
+      <core-icon-button
+      src="arrow_down.png" id="downvote">  
+      </core-icon-button>
+    </div> -->
+
     <content></content>
     
   </template>
   <script>
-  Polymer({});
+  Polymer({
+    var likes = 0;
+    var dislikes = 1;
+  });
   </script>
 </polymer-element>
